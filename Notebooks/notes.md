@@ -34,3 +34,6 @@ To-do
 - Make hists of distros, graph x prop vs y prop. try and figure out `generalized` formation channels for the system types. Use the `interp_class_HMS_HMS` rows in the oneline to help try and figure out said formation. 
 - Maybe just make a python script which takes in the .h5 file and spits out a df with the targeted rows as well as a population file with the formation channels?
 
+- is there a better way for filterting other then where="str bool cond". loading into pandas is obvs very inefficent, but a little easiser to work with
+
+- ask if I can correct some typos on the POSYDON docs
