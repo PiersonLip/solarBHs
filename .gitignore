@@ -1,1 +1,18 @@
 *.h5 
+
+latex crap 
+*.gz
+*.aux
+*.log
+*.glg
+*.glo 
+*.gls 
+*.ist
+*.toc
+*.out
+*.md5
+*.dpth
+*.auxlock
+*.fls
+*.fdb_latexmk
+*.minted

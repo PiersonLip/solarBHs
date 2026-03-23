@@ -1,0 +1,379 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Define Article %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass{article}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Using Packages %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{empheq}
+\usepackage{mdframed}
+\usepackage{booktabs}
+\usepackage{lipsum}
+\usepackage{graphicx}
+\usepackage{color}
+% \usepackage{psfrag}
+\usepackage{pgfplots}
+\usepackage{bm}
+\usepackage{amsmath}
+\usepackage[most]{tcolorbox}
+\usepackage{xparse}
+\usepackage{darkmode}
+\usepackage[stable]{footmisc}
+\usepackage{gensymb}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage[colorlinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage{cancel}
+\usepackage{minted}
+\setminted{
+  fontsize=\small,
+  tabsize=2,
+  frame=lines,
+  framesep=2mm
+}
+\usepackage{footnote}
+\makesavenoteenv{tabular}
+% --- Glossaries + TikZ externalization friendly setup ---
+\makeatletter
+\@ifundefined{pgfexternalrealjob}{%
+  % Main document run: full glossaries with automake
+  \usepackage[automake]{glossaries-extra}%
+}{%
+  % External TikZ runs: minimal glossaries that don't try to build/read files
+  \usepackage[nostyles]{glossaries-extra}%
+  % Pretend glossary files don't exist, so no "use \makeglossaries" error
+  \def\glsifexists#1#2#3{#3}%
+}
+\makeatother
+
+\usetikzlibrary{calc,decorations.pathreplacing, arrows.meta, positioning, external}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Other Settings
+\enabledarkmode
+
+%%%%%%%%%%%%%%%%%%%%%%%%%% Page Setting %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\geometry{a4paper}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%% Define some useful colors %%%%%%%%%%%%%%%%%%%%%%%%%%
+\definecolor{ocre}{RGB}{243,102,25}
+\definecolor{mygray}{RGB}{243,243,244}
+\definecolor{deepGreen}{RGB}{26,111,0}
+\definecolor{shallowGreen}{RGB}{235,255,255}
+\definecolor{deepBlue}{RGB}{61,124,222}
+\definecolor{shallowBlue}{RGB}{235,249,255}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%% Define an orangebox command %%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand\orangebox[1]{\fcolorbox{ocre}{mygray}{\hspace{1em}#1\hspace{1em}}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% English Environments %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Theorem Macro %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newtheoremstyle{mytheoremstyle}{3pt}{3pt}{\normalfont}{0cm}{\rmfamily\bfseries}{}{1em}{{\color{black}\thmname{#1}~\thmnumber{#2}}\thmnote{\,--\,#3}}
+\newtheoremstyle{myproblemstyle}{3pt}{3pt}{\normalfont}{0cm}{\rmfamily\bfseries}{}{1em}{{\color{black}\thmname{#1}~\thmnumber{#2}}\thmnote{\,--\,#3}}
+\theoremstyle{mytheoremstyle}
+\newmdtheoremenv[linewidth=1pt,backgroundcolor=shallowGreen,linecolor=deepGreen,leftmargin=0pt,innerleftmargin=20pt,innerrightmargin=20pt,]{theorem}{Theorem}[section]
+\theoremstyle{mytheoremstyle}
+\newmdtheoremenv[linewidth=1pt,backgroundcolor=shallowBlue,linecolor=deepBlue,leftmargin=0pt,innerleftmargin=20pt,innerrightmargin=20pt,]{definition}{Definition}[section]
+\theoremstyle{myproblemstyle}
+\newmdtheoremenv[linecolor=black,leftmargin=0pt,innerleftmargin=10pt,innerrightmargin=10pt,]{problem}{Problem}[section]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\theoremstyle{myproblemstyle}
+\newmdtheoremenv[
+  linecolor=black,
+  leftmargin=0pt,
+  innerleftmargin=10pt,
+  innerrightmargin=10pt,
+]{example}{Example}[section]
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%% Equation Macro %%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Simple mdframed style for equation boxes (no TikZ)
+\newmdenv[
+        linewidth=1pt,
+        backgroundcolor=black!85,
+        fontcolor = white!90,
+        linecolor=white!100,
+        leftmargin=0pt,
+        innerleftmargin=20pt,
+        innerrightmargin=20pt,]
+        {eqbox}
+
+\ExplSyntaxOn
+\seq_new:N \g_piers_eq_seq
+
+% Store (label, title, equation-body) for later printing
+\cs_new_protected:Npn \piers_add_eq:nnn #1#2#3
+  {
+    \seq_gput_right:Nn \g_piers_eq_seq
+      { \piers_eq_entry:nnn {#1}{#2}{#3} }
+  }
+
+% How each equation is printed in the final summary
+\cs_new_protected:Npn \piers_eq_entry:nnn #1#2#3
+  {
+    \par\noindent
+    \begin{minipage}{0.72\linewidth}
+      \begin{equation*}
+        #3
+      \end{equation*}
+    \end{minipage}
+    \begin{minipage}{0.9\linewidth}
+      \raggedright
+      \qquad\eqref{#1}\;(\textit{#2})
+    \end{minipage}
+
+    \par\bigskip
+  }
+
+% Environment: \begin{eqboxed}{label}{Title}{Description} <equation> \end{eqboxed}
+\NewDocumentEnvironment{eqboxed}{ m m m +b }
+  {
+    % begin code: mdframed-based, no TikZ
+    \begin{eqbox}
+      {\bfseries #2}\par\vspace{0.4em}%
+      \begin{equation}
+        \label{#1}
+        #4
+      \end{equation}
+      #3
+    \end{eqbox}
+    % store equation body for later
+    \piers_add_eq:nnn{#1}{#2}{#4}
+  }
+  {
+    % end code
+  }
+
+% Command to print all stored equations at the end
+\NewDocumentCommand{\PrintAllEquations}{}
+  {
+    \section{Equations}
+    \seq_use:Nn \g_piers_eq_seq { }
+  }
+\ExplSyntaxOff
+
+% ----------------------------
+% Constants boxed environment
+% ----------------------------
+\newmdenv[
+  framemethod=default,
+  linewidth=1pt,
+  backgroundcolor=black!85,
+  fontcolor = white!90,
+  linecolor=white!100,
+  leftmargin=0pt,
+  innerleftmargin=20pt,
+  innerrightmargin=20pt,
+]{constbox}
+
+\ExplSyntaxOn
+\seq_new:N \g_piers_const_seq
+
+% Store (label, title, constant-body) for later printing
+\cs_new_protected:Npn \piers_add_const:nnn #1#2#3
+  {
+    \seq_gput_right:Nn \g_piers_const_seq
+      { \piers_const_entry:nnn {#1}{#2}{#3} }
+  }
+
+% How each constant is printed in the final summary
+\cs_new_protected:Npn \piers_const_entry:nnn #1#2#3
+  {
+    \par\noindent
+    \begin{minipage}{0.72\linewidth}
+      % mirror your equation* block, but as display math
+      \[
+        #3
+      \]
+    \end{minipage}
+    \begin{minipage}{0.9\linewidth}
+      \raggedright
+      \qquad(\texttt{\ref{#1}})\;(\textit{#2})
+    \end{minipage}
+
+    \par\bigskip
+  }
+
+\newcounter{const}
+\renewcommand{\theconst}{\arabic{const}}
+
+% Environment: \begin{constboxed}{label}{Title}{Description} <constant> \end{constboxed}
+\NewDocumentEnvironment{constboxed}{ m m m +b }
+  {
+    \refstepcounter{const}
+    \begin{constbox}
+      {\bfseries #2}\par\vspace{0.4em}%
+      \label{#1}
+      \[ 
+        #4
+      \]
+      #3
+    \end{constbox}
+    % store constant body for later
+    \piers_add_const:nnn{#1}{#2}{#4}
+  }
+  {}
+
+% Command to print all stored constants at the end
+\NewDocumentCommand{\PrintAllConstants}{}
+  {
+    \section{Constants}
+    \seq_use:Nn \g_piers_const_seq { }
+  }
+\ExplSyntaxOff
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Plotting Settings %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepgfplotslibrary{colorbrewer}
+\pgfplotsset{width=8cm,compat=1.9}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Title & Author %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\title{R1}
+\author{Pierson Lipschultz}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%% Glossary entries %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Only do the real glossaries work in the main document run
+\tikzifexternalizing{}{%
+  \makeglossaries
+}
+
+\tikzexternalize[prefix=tikz-cache/]
+%%%%%%%5%%%%%%%%%%%%%%%%%%%55
+\begin{document}
+    \pagestyle{fancy}
+
+    \fancyhf{}
+    \fancyfoot[L]{\nouppercase{\leftmark}} % "1 INTRODUCTION"
+    \fancyfoot[R]{\thepage}% page number on right
+
+    % Remove header rule and add footer rule instead
+    \renewcommand{\headrulewidth}{0pt}
+    \renewcommand{\footrulewidth}{0.4pt}
+    \renewcommand{\sectionmark}[1]{\markboth{#1}{}}
+
+    \maketitle
+
+\section{New Code / Devs}
+\hrule
+\vspace{.5cm}
+
+\subsection{Python Terminal Script for Filtering}
+\hrule
+\vspace{.5cm}
+Because we're likely to need to filter quite a few systems with very similar methods I decided to make an actual script instead of just using a notebook. The largest upside is that this can easily be run on a compute node, which should make filtering larger sims easier.
+
+Takes a user input in the CLI (see below), filter for all \verb|BH_Sol| systems, and returns the population file with said system as well as a .csv of just the \verb|BH_Sol| rows. Furthermore, as it is running it provides an output via terminal stating how many \verb|BH_MS| systems it found, how many are S1:S2, as if any are S2:S1, it prints a warning as well as listing the count of them.\\
+
+\textbf{Useage Example}
+\begin{minted}{bash}
+  python BH-Sol_Filter.py /Data/1e+00_Zsun_population.h5 -o ./testResults
+\end{minted}
+
+\textbf{Arguments}
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+ Argument & Use & Ex value \\
+ \hline
+ \verb|-o| & output location  & .results\\
+ \verb|-outputName| & name for the outputed files\footnote{If a name is not specificed, it will use the orignal filename, and append a specifier to the front}  & \verb|BH_Sol_Systems|\\
+ \verb|-overwrite| & Whether to overwrite existing results, T/F bool& True\\
+ \verb|--maxMass| & Max mass used when filtering, defaults to 3\(M_\odot\)& 3.5\\
+ \verb|--maxPeriod| & Max period used when filtering, defaults to 3.5 days & 4\\
+\hline
+\end{tabular}
+\end{center}
+
+Can be found at \url{https://github.com/PiersonLip/stellarBHs/blob/main/FilteringScripts/BH-Sol_Filter.py}
+
+\pagebreak
+\section{New Research}
+\hrule
+\vspace{.5cm}
+When filtering via notebook and via sciript, both returned 6 systems that had \(p_{orb} < 3.5, M_{\odot,2} < 3, t < 10e9\)
+
+These systems all evolved via the same channel, that being \verb|ZAMS_oCE1_CC1_oRLO2_CC2|. Via inspection of the history df and the oneline, it is evident that the systems evolve detached, then post-MS \textbf{unstable} RLO happens via S1 \(\rightarrow\) S2. This leads to common envolope, which \textit{greatly} decreases the orbtial period. This envolope is then ejected, leaving a depleted stripped He core. The core then collapses in a couple thousand years, leaving the system in a BH-MS state with low \(p_{orb}\)/seperation. 
+
+These systems then evolve in a semi-partiuclar way, where it is highy likely that there will be RLO from S2 onto S1, and because S1 > S2, this is stable, and leads to \textit{very} prolonged stable RLO (seemingly on the scale of  \(> 14 Gyr\)), which leaves S2 at low masses (\(< .08 M_\odot\)).
+
+Interestly, the inital period for all the systems is very close to \(~4000 d\), with mean of 4022 and a std of only 151. However, a larger sample size is needed to confirm this.
+
+Additionally, the inital masses of S1 and S2 appear to be quite constrained as well. 
+
+\begin{table}[h]
+\centering
+  \begin{minipage}[t]{0.3\textwidth}
+    \centering
+    \begin{tabular}{|l|r|}
+    \hline
+    & orbital\_period\_i \\
+    \hline
+      count & 6.000000 \\
+      mean & 4022.716197 \\
+      std & 151.522384 \\
+      min & 3873.118288 \\
+      25\% & 3908.300983 \\
+      50\% & 3978.305326 \\
+      75\% & 4124.397101 \\
+      max & 4248.507680 \\
+    \hline
+    \end{tabular}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.3\textwidth}
+    \centering
+    \begin{tabular}{|l|r|}
+    \hline
+    & S1\_mass\_i \\
+    \hline
+      count & 6.000000 \\
+      mean & 17.515761 \\
+      std & 0.520269 \\
+      min & 16.815111 \\
+      25\% & 17.190036 \\
+      50\% & 17.510176 \\
+      75\% & 17.818155 \\
+      max & 18.254965 \\
+    \hline
+    \end{tabular}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.3\textwidth}
+    \centering
+    \begin{tabular}{|l|r|}
+    \hline
+    & S2\_mass\_i \\
+    \hline
+      count & 6.000000 \\
+      mean & 2.296788 \\
+      std & 0.320702 \\
+      min & 1.797809 \\
+      25\% & 2.120753 \\
+      50\% & 2.353828 \\
+      75\% & 2.547210 \\
+      max & 2.620529 \\
+    \hline
+    \end{tabular}
+  \end{minipage}
+
+\end{table}
+
+\end{document}
