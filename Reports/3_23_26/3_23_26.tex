@@ -35,6 +35,12 @@
   framesep=2mm
 }
 \usepackage{footnote}
+\usepackage{listings}
+\lstset{
+basicstyle=\small\ttfamily,
+columns=flexible,
+breaklines=true
+}
 \makesavenoteenv{tabular}
 % --- Glossaries + TikZ externalization friendly setup ---
 \makeatletter
@@ -376,4 +382,54 @@ Additionally, the inital masses of S1 and S2 appear to be quite constrained as w
 
 \end{table}
 
+\subsection{Bugs/issues}
+\hrule
+\vspace{.5cm}
+
+Found an issue with the script used to generate the slurm jobs, fials due to a \textit{lack of} a var being passed 
+
+For example, when running
+
+\begin{minted}{bash}
+  posydon-popsyn setup BH_Sol_Grid2.ini --job_array=50 --walltime=40:00:00 
+  
+  --partition=ciera-std --account=b1094 --email=piersonlipschultz@gmail.com --mem_per_cpu=12G
+\end{minted}
+
+Each slurm job array fails from\dots
+
+\begin{verbatim}
+  Srun fatal: SLURM_MEM_PER_CPU, SLURM_MEM_PER_GPU and SLURM_MEM_PER_NODE are mutually exclusive
+\end{verbatim}
+
+This isn't nessecairly a posydon issue, as it happens when the script is being already ran \textit{in} an interactive compute node, as the memory env then gets passed to the script. Fixed it with \verb|srun --mem=0| or just not running in an interactive node.
+
+\pagebreak
+\section{Questions}
+\hrule
+\vspace{.5cm}
+\begin{list}{-}{}
+\item Tried running a grid, seems to have just completly failed from trying to refence itself before it was fully initalized. Entire log was filled with 
+\begin{minted}{bash}
+    Traceback (most recent call last):
+    File "/gpfs/projects/b1095/bku2126/UCXBInvestigation/POSYDON/posydon/popsyn/binarypopulation.py", line 339, in _safe_evolve
+      binary.evolve()
+    File "/gpfs/projects/b1095/bku2126/UCXBInvestigation/POSYDON/posydon/binary_evol/binarystar.py", line 255, in evolve
+      self.run_step()
+    File "/gpfs/projects/b1095/bku2126/UCXBInvestigation/POSYDON/posydon/binary_evol/binarystar.py", line 283, in run_step
+      next_step(self)
+    File "/gpfs/projects/b1095/bku2126/UCXBInvestigation/POSYDON/posydon/binary_evol/DT/step_merged.py", line 134, in __call__
+      super().__call__(binary)
+    File "/gpfs/projects/b1095/bku2126/UCXBInvestigation/POSYDON/posydon/binary_evol/DT/step_isolated.py", line 76, in __call__
+      super().__call__(binary)
+    File "/gpfs/projects/b1095/bku2126/UCXBInvestigation/POSYDON/posydon/binary_evol/DT/step_detached.py", line 418, in __call__
+      self.update_after_evo(t, binary, primary, secondary)
+    File "/gpfs/projects/b1095/bku2126/UCXBInvestigation/POSYDON/posydon/binary_evol/DT/step_detached.py", line 798, in update_after_evo
+      current = history[-1]
+                ~~~~~~~^^^^
+  IndexError: index -1 is out of bounds for axis 0 with size 0
+\end{minted}
+and from what I can tell, this happened to nearly all the simed bianaries
+\item Should we include an inital eccentiricity distrobution? I imagine it would heavily impact formation with unstable RLO and CE 
+\end{list}
 \end{document}
