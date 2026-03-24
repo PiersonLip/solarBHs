@@ -2,3 +2,5 @@
 *.out
 *slurm*
 *.batch.*
+run_metallicity.py
+merge_metallicity.py
