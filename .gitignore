@@ -4,3 +4,20 @@
 *.batch.*
 run_metallicity.py
 merge_metallicity.py
+
+latex crap 
+*.gz
+*.aux
+*.log
+*.glg
+*.glo 
+*.gls 
+*.ist
+*.toc
+*.out
+*.md5
+*.dpth
+*.auxlock
+*.fls
+*.fdb_latexmk
+*.minted
