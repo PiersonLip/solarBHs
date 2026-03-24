@@ -10,6 +10,9 @@ from collections import Counter
 ### useage
 # python BH-Sol_Filter.py /home/bku2126/b1095/bku2126/stellarBHs/Data/1e+00_Zsun_population.h5 -o ./testResults
 
+
+# python BH-Sol_Filter.py /home/bku2126/b1095/bku2126/stellarBHs/grids/grid1/1e+00_Zsun_population.h5 -o ./3_24_26_Grid
+
 def parse_args():
     parser = argparse.ArgumentParser(description="Filter pop .h5 file for low porb BH-Sol Binaries")
     parser.add_argument("input_file", help="Path to input file")
@@ -44,15 +47,23 @@ def process(pop, maxMass, maxPeriod) -> tuple:
     ### BH-MS_Detached filt
     BH_MS_FiltCond_Hist = "((S2_state == 'H-rich_Core_H_burning') & (S1_state == 'BH')) & (state == 'detached')"
     print('filtering pop for S1, S2, BH_MS')
-    solBH_df_Hist = pop.history.select(where = BH_MS_FiltCond_Hist)
+    try:
+        solBH_df_Hist = pop.history.select(where = BH_MS_FiltCond_Hist)
+    except:
+        print(f'WARNING!! found NO BH_MS-Detached systems')
+
     print(f'found {len(solBH_df_Hist)} BH_MS-Detached systems')
 
     #### checking for S2 BHs and S1 MS 
     BH_MS_InverseFiltCond_Hist = "((S1_state == 'H-rich_Core_H_burning') & (S2_state == 'BH')) & (state == 'detached')"
 
     print('filtering pop for S2, S1, BH-Sol')
-    solBH_Inverse_df_Hist = pop.history.select(where = BH_MS_InverseFiltCond_Hist)
-    if len(solBH_Inverse_df_Hist) != 0: print (f'Warning!! Found {len(solBH_Inverse_df_Hist)} systems which S1:MS, S2:BH!! ')
+    try:
+        solBH_Inverse_df_Hist = pop.history.select(where = BH_MS_InverseFiltCond_Hist)
+        if len(solBH_Inverse_df_Hist) != 0: print (f'Warning!! Found {len(solBH_Inverse_df_Hist)} systems which S1:MS, S2:BH!! ')
+    except:
+        print('No S2, S1 BHs :)')
+
 
     ############################################
     ## actually filter for the BH_Sol systems ##
