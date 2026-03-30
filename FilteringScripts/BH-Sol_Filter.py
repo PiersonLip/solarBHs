@@ -74,8 +74,8 @@ def process(pop, maxMass, maxPeriod) -> tuple:
         df[
             (df['S1_state'] == 'BH') & (df['S2_state'] == 'H-rich_Core_H_burning')
             &  (df['state'] == 'detached')
-            &  (df['S2_mass'] < maxMass) & (df['orbital_period'] < maxPeriod)
-            &  (df['S2_mass'] > .1)
+            &  (df['S2_mass'] < float(maxMass)) & (df['orbital_period'] < float(maxPeriod))
+            &  (df['S2_mass'] > .4)
             &  (df['time'] < 10e9)
         ])
     
