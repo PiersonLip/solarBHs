@@ -284,11 +284,13 @@ breaklines=true
 \subsection{Python Terminal Script for Filtering}
 \hrule
 \vspace{.5cm}
-Because we're likely to need to filter quite a few systems with very similar methods I decided to make an actual script instead of just using a notebook. The largest upside is that this can easily be run on a compute node, which should make filtering larger sims easier.
+Because we're likely to need to filter quite a few systems with very similar methods I decided to make an actual script instead of just using a notebook repetably. The largest upside is that this can easily be run on a compute node, which makes filtering larger sims easier.
 
-Takes a user input in the CLI (see below), filter for all \verb|BH_Sol| systems, and returns the population file with said system as well as a .csv of just the \verb|BH_Sol| rows. Furthermore, as it is running it provides an output via terminal stating how many \verb|BH_MS| systems it found, how many are S1:S2, as if any are S2:S1, it prints a warning as well as listing the count of them.\\
+Takes a user input in the CLI (see below), filters for all \verb|BH_Sol| systems, and returns the population file with said system as well as a .csv of just the \verb|BH_Sol| rows. Furthermore, while it is running it provides feedback via the terminal stating how many \verb|BH_MS| systems it found, how many are the expected S1:S2 configuration. If any are S2:S1, it prints a warning as well as the total count.\\
 
-\textbf{Useage Example}
+Need to further refine it, but there's also a SBATCH script.
+
+\textbf{Usage Example}
 \begin{minted}{bash}
   python BH-Sol_Filter.py /Data/1e+00_Zsun_population.h5 -o ./testResults
 \end{minted}
@@ -300,8 +302,8 @@ Takes a user input in the CLI (see below), filter for all \verb|BH_Sol| systems,
  Argument & Use & Ex value \\
  \hline
  \verb|-o| & output location  & .results\\
- \verb|-outputName| & name for the outputed files\footnote{If a name is not specificed, it will use the orignal filename, and append a specifier to the front}  & \verb|BH_Sol_Systems|\\
- \verb|-overwrite| & Whether to overwrite existing results, T/F bool& True\\
+ \verb|-outputName| & name for the outputed files\footnote{If a name is not specificed it will use the orignal filename, appending a specifier to the front}  & \verb|BH_Sol_Systems|\\
+ \verb|-overwrite| & Whether to overwrite existing results, T/F bool. Defaults to F& True\\
  \verb|--maxMass| & Max mass used when filtering, defaults to 3\(M_\odot\)& 3.5\\
  \verb|--maxPeriod| & Max period used when filtering, defaults to 3.5 days & 4\\
 \hline
@@ -314,6 +316,11 @@ Can be found at \url{https://github.com/PiersonLip/stellarBHs/blob/main/Filterin
 \section{New Research}
 \hrule
 \vspace{.5cm}
+
+\subsection{Pop 1}
+\hrule
+\vspace{.5cm}
+
 When filtering via notebook and script, both returned 6 systems that had \(p_{orb} < 3.5, M_{\odot,2} < 3, t < 10e9\)
 
 These systems all evolved via the same channel, that being \verb|ZAMS_oCE1_CC1_oRLO2_CC2|. Via inspection of the history df and the oneline, it is evident that the systems evolve detached, then post-MS \textbf{unstable} RLO happens via S1 \(\rightarrow\) S2. This leads to common envolope, which \textit{greatly} decreases the orbtial period. This envolope is then ejected, leaving a depleted stripped He core. The core then collapses in a couple thousand years, leaving the system in a BH-MS state with low \(p_{orb}\)/seperation. 
@@ -382,27 +389,103 @@ Additionally, the inital masses of S1 and S2 appear to be quite constrained as w
 
 \end{table}
 
-\subsection{Bugs/issues}
+\subsection{{Pop 2}}
+\hrule
+\vspace{.5cm}
+Ran a second grid inlcuding a eccentiricity distro, as well as slightly contraining the dataset further, hoping to confirm some of the init conditions
+
+\begin{table}[h]
+\centering
+  \begin{minipage}[t]{0.3\textwidth}
+    \centering
+    \begin{tabular}{|l|r|}
+    \hline
+    & orbital\_period\_i \\
+    \hline
+      count & 12.000000 \\
+      mean & 4136.066721 \\
+      std & 177.676729 \\
+      min & 3844.570082 \\
+      25\% & 4024.214908 \\
+      50\% & 4119.397535 \\
+      75\% & 4273.345845 \\
+      max & 4370.857404 \\
+    \hline
+    \end{tabular}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.3\textwidth}
+    \centering
+    \begin{tabular}{|l|r|}
+    \hline
+    & S1\_mass\_i \\
+    \hline
+      count & 12.000000 \\
+      mean & 2.240382 \\
+      std & 0.412075 \\
+      min & 1.551266 \\
+      25\% & 1.903135 \\
+      50\% & 2.300024 \\
+      75\% & 2.579111 \\
+      max & 2.729828 \\
+    \hline
+    \end{tabular}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.3\textwidth}
+    \centering
+    \begin{tabular}{|l|r|}
+    \hline
+    & S2\_mass\_i \\
+    \hline
+      count & 12.000000 \\
+      mean & 17.357478 \\
+      std & 1.073496 \\
+      min & 15.506937 \\
+      25\% & 16.714083 \\
+      50\% & 16.998229 \\
+      75\% & 18.162633 \\
+      max & 19.435080 \\
+    \hline
+    \end{tabular}
+  \end{minipage}
+
+\end{table}
+
+
+
+
+% \subsection{Bugs/issues}
+% \hrule
+% \vspace{.5cm}
+
+% Found an issue with the script used to generate the slurm jobs, fials due to a \textit{lack of} a var being passed 
+
+% For example, when running
+
+% \begin{minted}{bash}
+%   posydon-popsyn setup BH_Sol_Grid2.ini --job_array=50 --walltime=40:00:00 
+  
+%   --partition=ciera-std --account=b1094 --email=piersonlipschultz@gmail.com --mem_per_cpu=12G
+% \end{minted}
+
+% Each slurm job array fails from\dots
+
+% \begin{verbatim}
+%   Srun fatal: SLURM_MEM_PER_CPU, SLURM_MEM_PER_GPU and SLURM_MEM_PER_NODE are mutually exclusive
+% \end{verbatim}
+
+% This isn't nessecairly a posydon issue, as it happens when the script is being already ran \textit{in} an interactive compute node, as the memory env then gets passed to the script. Fixed it with \verb|srun --mem=0| or just not running in an interactive node.
+
+\pagebreak
+\section{To-Do}
 \hrule
 \vspace{.5cm}
 
-Found an issue with the script used to generate the slurm jobs, fials due to a \textit{lack of} a var being passed 
+\begin{list}{-}{}
+\item Fid out if it makes sense for the onset of un-stable rlo to happen at \(P_{orb} \approx 4000 \text{days}\)
+\end{list}
 
-For example, when running
-
-\begin{minted}{bash}
-  posydon-popsyn setup BH_Sol_Grid2.ini --job_array=50 --walltime=40:00:00 
-  
-  --partition=ciera-std --account=b1094 --email=piersonlipschultz@gmail.com --mem_per_cpu=12G
-\end{minted}
-
-Each slurm job array fails from\dots
-
-\begin{verbatim}
-  Srun fatal: SLURM_MEM_PER_CPU, SLURM_MEM_PER_GPU and SLURM_MEM_PER_NODE are mutually exclusive
-\end{verbatim}
-
-This isn't nessecairly a posydon issue, as it happens when the script is being already ran \textit{in} an interactive compute node, as the memory env then gets passed to the script. Fixed it with \verb|srun --mem=0| or just not running in an interactive node.
 
 \pagebreak
 \section{Questions}
@@ -429,7 +512,8 @@ This isn't nessecairly a posydon issue, as it happens when the script is being a
                 ~~~~~~~^^^^
   IndexError: index -1 is out of bounds for axis 0 with size 0
 \end{minted}
-and from what I can tell, this happened to nearly all the simed bianaries
-\item Should we include an inital eccentiricity distrobution? I imagine it would heavily impact formation with unstable RLO and CE 
+and from what I can tell, this happened to nearly all the simmed bianaries
+\item Should we include an inital eccentiricity distribution? I imagine it would heavily impact formation with unstable RLO and CE 
+\item 
 \end{list}
 \end{document}
