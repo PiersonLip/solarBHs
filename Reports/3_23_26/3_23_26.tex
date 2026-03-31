@@ -461,27 +461,28 @@ Ran a second grid inlcuding an eccentiricity distro (Ps and Qs), as well as slig
 \subsection{Full \(P_{orb}\)}
 \hrule
 \vspace{.5cm}
-When filterting pop 2 with a max \(p_{orb} = 300 \text{days}\) we find 46 BH-Sol systems, all of these (except one!) evolve via the same CE channel. There is one system which does \textit{not} do RLO before CC1, and it also only reaches a solar-like mass after RLO2, so I'm exlucding it for now. Probably important to keep in mind though.
+When filterting pop 2 with a max \(p_{orb} = 300 \text{days}\) we find 46 BH-Sol systems, all of these (except one!) evolve via the same CE channel. There is one system which does \textit{not} do RLO before CC1, but only reaches a solar-like mass after RLO2 (and also fails), so I'm excluding it for now. Probably important to keep in mind though.
 
-When plotting S1 vs S2 intial and formation masses there appears be a correlation. In fig \ref{g:InitMassesBHSOL} this correlation appears to be quite strong, however, this very well may be becuase of the intial distribution.
+When plotting S1 vs S2 initial and formation masses there appears be a correlation. In fig \ref{fig:InitMassesBHSOL} this correlation appears to be quite strong, however, this very well may be becuase of the initial distribution.
 
 
 \begin{figure}[H]
     \centering
     \resizebox{0.85\textwidth}{!}{\input{graphs/BH-Sol_Masses_at_Initial_Formation.pgf}}
-    \caption{Masses at intial BH-Sol state. i.e. BH formation/S1 collaspe}
+    \caption{Masses at initial BH-Sol state. i.e. BH formation/S1 collaspe}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \resizebox{0.85\textwidth}{!}{\input{graphs/Initial_Masses_of_BH-Sol_progenitors.pgf}\label{g:InitMassesBHSOL}} 
-    \caption{Initial ZAMS masses. May just be a byproduct of Ps and Qs, further sims with diff intial distribution needed.}
+    \resizebox{0.85\textwidth}{!}{\input{graphs/Initial_Masses_of_BH-Sol_progenitors.pgf}} 
+    \caption{Initial ZAMS masses. May just be a byproduct of Ps and Qs, further sims with diff initial distribution needed.}
+    \label{fig:InitMassesBHSOL}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \resizebox{0.9\textwidth}{!}{\input{graphs/orbital_period_of_BH-Sol_systems_at_S1_SN.pgf}\label{g:OP-BH-Sol}} 
-    \caption{Irbital Period of BH-Sol Systems at init onsent. }
+    \caption{Orbital Period of BH-Sol Systems at init onsent. }
 \end{figure}
 
 \begin{figure}[H]
@@ -492,14 +493,15 @@ When plotting S1 vs S2 intial and formation masses there appears be a correlatio
 
 \begin{figure}[H]
     \centering
-    \resizebox{0.9\textwidth}{!}{\input{graphs/S1_mass_i_of_BH-Sol_Systems.pgf}\label{g:OP-BH-Sol}} 
-    \caption{S2 Mass Intial Distro}
+    \resizebox{0.9\textwidth}{!}{\input{graphs/S1_mass_i_of_BH-Sol_Systems.pgf}}
+    \caption{S1 mass inital distribution}
+    \label{g:OP-BH-Sol}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \resizebox{0.9\textwidth}{!}{\input{graphs/S2_mass_i_of_BH-Sol_Systems.pgf}\label{g:OP-BH-Sol}} 
-    \caption{S2 Mass Intial Distro}
+    \resizebox{0.9\textwidth}{!}{\input{graphs/S2_mass_i_of_BH-Sol_Systems.pgf}} 
+    \caption{S2 mass inital distribution}
 \end{figure}
 
 % \subsection{Bugs/issues}
