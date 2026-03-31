@@ -325,7 +325,7 @@ When filtering via notebook and script, both returned 6 systems that had \(p_{or
 
 These systems all evolved via the same channel, that being \verb|ZAMS_oCE1_CC1_oRLO2_CC2|. Via inspection of the history df and the oneline, it is evident that the systems evolve detached, then post-MS \textbf{unstable} RLO happens via S1 \(\rightarrow\) S2. This leads to common envolope, which \textit{greatly} decreases the orbtial period. This envolope is then ejected, leaving a depleted stripped He core. The core then collapses in a couple thousand years, leaving the system in a BH-MS state with low \(p_{orb}\)/seperation. 
 
-These systems then evolve in a semi-peculiar way, where it is highy likely that there will be RLO from S2 onto S1, and because S1 > S2, this is stable, and leads to \textit{very} prolonged stable RLO (seemingly on the scale of  \(> 14 Gyr\)), which leaves S2 at low masses (\(< .08 M_\odot\)).
+These systems then evolve in a semi-peculiar way, where it is highy likely that there will be RLO from S2 onto S1, and because \(S1 > S2\), this is stable, and leads to \textit{very} prolonged stable RLO (seemingly on the scale of  \(> 10 Gyr\)), which leaves S2 at low masses (\(< .08 M_\odot\)).
 
 Interestly, the inital period for all the systems is very close to \(~4000 d\), with mean of 4022 and a std of only 151. However, a larger sample size is needed to confirm this.
 
@@ -452,6 +452,10 @@ Ran a second grid inlcuding a eccentiricity distro, as well as slightly contrain
 
 \end{table}
 
+\subsection{Full \(P_{orb}\)}
+\hrule
+\vspace{.5cm}
+When filterting pop 2 with a max \(p_{orb} = 300 \text{days}\) we find 46 BH-Sol systems, all of these (except one!) evolve via the same CE channel. There is one system which does \textit{not} do RLO before CC1, and it also only reaches a solar-like mass after RLO2, so I'm exlucding it for now. Probably important to keep in mind though.
 
 
 
@@ -513,7 +517,8 @@ Ran a second grid inlcuding a eccentiricity distro, as well as slightly contrain
   IndexError: index -1 is out of bounds for axis 0 with size 0
 \end{minted}
 and from what I can tell, this happened to nearly all the simmed bianaries
-\item Should we include an inital eccentiricity distribution? I imagine it would heavily impact formation with unstable RLO and CE 
-\item 
+\item Should we include an inital eccentiricity distribution? I imagine it would impact formation with unstable RLO and CE.
+\item Does it make sense to still be filtering for \(p_{orb} < 3 \text{days}\)? The simulations seem to be suggesting that \textit{all} BH-Sol systems evolve through CE, and that the main thing effecting \(p_{orb}\) post CE is the kick strength of the BH. So, maybe we should be initally filterting for all BH-Sol, and if we want the formation rate of specifically low \(p_{orb}\) ones, just take the subpop.
+\item Cool if i present an assortment of general POSYDON things ive worked on at astrofest?
 \end{list}
 \end{document}
