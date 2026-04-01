@@ -461,9 +461,7 @@ Ran a second grid inlcuding an eccentiricity distro (Ps and Qs), as well as slig
 \subsection{Full \(P_{orb}\)}
 \hrule
 \vspace{.5cm}
-When filterting pop 2 with a max \(p_{orb} = 300 \text{days}\) we find 46 BH-Sol systems, all of these (except one!) evolve via the same CE channel. There is one system which does \textit{not} do RLO before CC1, but only reaches a solar-like mass after RLO2 (and also fails), so I'm excluding it for now. Probably important to keep in mind though.
-
-When plotting S1 vs S2 initial and formation masses there appears be a correlation. In fig \ref{fig:InitMassesBHSOL} this correlation appears to be quite strong, however, this very well may be becuase of the initial distribution.
+When filtering population 2 with a max \(p_{orb} = 300 \text{days}\) we find 46 BH-Sol systems, all of these (except one!) evolve via the same CE channel. This suggests that there isn't a unique idenitiy placed on BH-Sol systems with \(p_{orb} \leq 3 \text{days}\)\footnote{This orbtial period distribution is possibly due to natal kick velocities, and is suggested by the literature, but I could not find a strong link in the limited data.}, and thus it makes more sense to investigate the population as a whole. Note that there is one system which does \textit{not} do RLO before CC1, and only reaches a solar-like mass after RLO2 (upon which it also fails), so I'm excluding it for now. Likely important to keep in mind though.
 
 
 \begin{figure}[H]
@@ -472,12 +470,6 @@ When plotting S1 vs S2 initial and formation masses there appears be a correlati
     \caption{Masses at initial BH-Sol state. i.e. BH formation/S1 collaspe}
 \end{figure}
 
-\begin{figure}[H]
-    \centering
-    \resizebox{0.85\textwidth}{!}{\input{graphs/Initial_Masses_of_BH-Sol_progenitors.pgf}} 
-    \caption{Initial ZAMS masses. May just be a byproduct of Ps and Qs, further sims with diff initial distribution needed.}
-    \label{fig:InitMassesBHSOL}
-\end{figure}
 
 \begin{figure}[H]
     \centering
@@ -504,6 +496,27 @@ When plotting S1 vs S2 initial and formation masses there appears be a correlati
     \caption{S2 mass inital distribution}
 \end{figure}
 
+\subsection{Strong Initial Masses Correlation}
+\hrule
+\vspace{.5cm}
+
+When plotting the individual masses of BH-Sol progenitors from Pop 2 there appeared to be a strong correlation between the two. We see this in figure \ref{fig:InitMassesBHSOL}.
+
+\begin{figure}[H]
+    \centering
+    \resizebox{0.85\textwidth}{!}{\input{graphs/Initial_Masses_of_BH-Sol_progenitors.pgf}} 
+    \caption{Initial ZAMS masses of simulation two, with mass ratios from Moe17PsandQs. \textit{Note that two failed systems have been excluded}}
+    \label{fig:InitMassesBHSOL}
+\end{figure}
+
+Initially, I figured this was a biasing from the mass ratio scheme in the simulation being passed through, so I ran another grid with a \verb|secondary_mass_scheme = 'flat_mass_ratio'|. While this would also introduce biasing, I was expecting it to be largely different enough from Moe, and thus could tell if it was simply an artifact or a real correlation. 
+
+\begin{figure}[H]
+    \centering
+    \resizebox{0.85\textwidth}{!}{\input{graphs/Initial_Masses_of_BH-Sol_progenitors.pgf}} 
+    \caption{Initial ZAMS masses of simulation two, with mass ratios from Moe17PsandQs. \textit{Note that two failed systems have been excluded}}
+    \label{fig:InitMassesBHSOL}
+\end{figure}
 % \subsection{Bugs/issues}
 % \hrule
 % \vspace{.5cm}
