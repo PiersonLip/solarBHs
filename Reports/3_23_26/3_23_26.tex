@@ -266,7 +266,7 @@ breaklines=true
 \tikzifexternalizing{}{%
   \makeglossaries
 }
-
+\sloppy
 \tikzexternalize[prefix=tikz-cache/]
 %%%%%%%5%%%%%%%%%%%%%%%%%%%55
 \begin{document}
@@ -283,18 +283,18 @@ breaklines=true
 
     \maketitle
 
-\section{New Code / Devs}
+\section{New Code / Dev Stuff}
 \hrule
 \vspace{.5cm}
 
 \subsection{Python Terminal Script for Filtering}
 \hrule
 \vspace{.5cm}
-Due to the fact that we to filter multiple simulations with very similar methods, I decided to make an actual script instead of just using a notebook repeatably. The largest upside is that this can easily be run on a compute node, which makes filtering larger sims easier. Also helps make sure any results are reproducable.
+Due to the fact that we need to filter multiple simulations using very similar methods, I decided to make an actual script instead of just using a notebook repeatably. The largest upside is that this can easily be run on a compute node, which makes filtering larger sims easier and faster. Having a single main filtering script also helps make sure any results are reproducible.
 
-Takes a user input via the CLI (see below), filters for all \verb|BH_Sol| systems, and returns the population file with said systems. Additionally, it returns a .csv of just the \verb|BH_Sol| rows. While running it provides feedback via the terminal stating how many \verb|BH_MS| systems it found, as well as how many are the expected S1:S2 configuration. If any are S2:S1, it prints a warning as well as the total count.\\
+Takes a user input via the CLI (see below), filters for all \verb|BH_Sol| systems, and returns the population file with said systems. Additionally, it returns a .csv of just the \verb|BH_Sol| rows. While running, it provides feedback via the terminal stating how many \verb|BH_MS| systems it found, as well as how many are the expected S1:S2 configuration. If any are S2:S1, it prints a warning as well as the total count.\\
 
-Need to further refine it, but there's also a default SBATCH script to help expidite the submission process.
+Need to further refine it, but there's also a default SBATCH script to help expedite the submission process.
 
 \textbf{Usage Example}
 \begin{minted}{bash}
@@ -307,8 +307,8 @@ Need to further refine it, but there's also a default SBATCH script to help expi
 \hline
  Argument & Use & Ex value \\
  \hline
- \verb|-o| & output location  & .results\\
- \verb|-outputName| & name for the outputed files\footnote{If a name is not specificed it will use the orignal filename, appending a specifier to the front}  & \verb|BH_Sol_Systems|\\
+ \verb|-o| & output location  & \verb|./results|\\
+ \verb|-outputName| & name for the output files\footnote{If a name is not specified it will use the original filename, appending a specifier to the front}  & \verb|BH_Sol_Systems|\\
  \verb|-overwrite| & Whether to overwrite existing results, T/F bool. Defaults to F& True\\
  \verb|--maxMass| & Max mass used when filtering, defaults to 3\(M_\odot\)& 3.5\\
  \verb|--maxPeriod| & Max period used when filtering, defaults to 3.5 days & 4\\
@@ -329,13 +329,13 @@ Can be found at \url{https://github.com/PiersonLip/stellarBHs/blob/main/Filterin
 
 When filtering via notebook and script, both returned 6 systems that had \(p_{orb} < 3.5, M_{\odot,2} < 3, t < 10e9\)
 
-These systems all evolved via the same channel, \verb|ZAMS_oCE1_CC1_oRLO2_CC2|. Via inspection of the history df and the oneline, it is evident that the systems evolve detached, then into post-MS \textbf{unstable} RLO via S1 \(\rightarrow\) S2. This period decrease leads to common envolope, which then \textit{greatly} decreases the orbtial period. The envolope is then ejected, leaving a depleted stripped He core\footnote{I need to read a lot more about CE evo, but my intutuion feels weird about the fact that just the envolope of \textit{one} of the stars is ejected}. The core then collapses in a couple of thousand years, leaving the system in a BH-MS state with low \(p_{orb}\)/seperation. 
+These systems all evolved via the same channel, \verb|ZAMS_oCE1_CC1_oRLO2_CC2|. Via inspection of the history df and the oneline, it is evident that the systems evolve detached, then into post-MS \textbf{unstable} RLO via S1 \(\rightarrow\) S2. This period decrease leads to common envelope, which then \textit{greatly} decreases the orbital period. The envelope is then ejected, leaving a depleted stripped He core\footnote{I need to read a lot more about CE evo, but my intuition feels weird about the fact that just the envelope of \textit{one} of the stars is ejected}. The core then collapses in a couple of thousand years, leaving the system in a BH-MS state with low \(p_{orb}\)/separation. 
 
-These systems then evolve in a semi-peculiar way, where it is highy likely that there will be RLO from S2 onto S1, and because \(S1 > S2\), the transfer is stable, leading to \textit{very} prolonged stable RLO (seemingly on the scale of  \(> 10 Gyr\)), which leaves S2 at low masses (\(< .08 M_\odot\)).
+These systems then evolve in a semi-peculiar way, where it is highly likely that there will be RLO from S2 onto S1, and because \(S1 > S2\), this transfer is stable, leading to \textit{very} prolonged stable RLO (seemingly on the scale of  \(> 10 Gyr\)), which leaves S2 at low masses (\(< .08 M_\odot\)).
 
-Interestingly, the inital period for all the systems is close to \(~4000 d\), with mean of 4022 and a std of only 151. However, a larger sample size is needed to confirm this.
+Interestingly, the initial period for all the systems is close to \(~4000 d\), with mean of 4022 and a std of only 151. However, a larger sample size is needed to confirm this.
 
-Additionally, the inital masses of S1 and S2 appear to be quite constrained as well. 
+Additionally, the initial masses of S1 and S2 appear to be quite constrained as well. 
 
 \begin{table}[H]
 \centering
@@ -398,7 +398,7 @@ Additionally, the inital masses of S1 and S2 appear to be quite constrained as w
 \subsection{{Pop 2}}
 \hrule
 \vspace{.5cm}
-Ran a second grid inlcuding an eccentiricity distro (Ps and Qs), as well as slightly constraining the dataset further (\(12 < M_1 < 100, \quad .1 < M_2 < 10\))\footnote{This is very constrained very early, but I wanted to try something while waiting for the 10 million sim}, hoping to confirm some of the init conditions.
+I ran a second grid including an eccentricity distro (Ps and Qs), as well as slightly constraining the initial conditions (\(12 < M_1 < 100, \quad .1 < M_2 < 10\))\footnote{This is very constrained very early, but I wanted to try something while waiting for the 10 million sim}, hoping to confirm some of the init conditions.
 
 \begin{table}[H]
 \centering
@@ -461,39 +461,39 @@ Ran a second grid inlcuding an eccentiricity distro (Ps and Qs), as well as slig
 \subsection{Full \(P_{orb}\)}
 \hrule
 \vspace{.5cm}
-When filtering population 2 with a max \(p_{orb} = 300 \text{days}\) we find 46 BH-Sol systems, all of these (except one!) evolve via the same CE channel. This suggests that there isn't a unique idenitiy placed on BH-Sol systems with \(p_{orb} \leq 3 \text{days}\)\footnote{This orbtial period distribution is possibly due to natal kick velocities, and is suggested by the literature, but I could not find a strong link in the limited data.}, and thus it makes more sense to investigate the population as a whole. Note that there is one system which does \textit{not} do RLO before CC1, and only reaches a solar-like mass after RLO2 (upon which it also fails), so I'm excluding it for now. Likely important to keep in mind though.
+When filtering population 2 with a max \(p_{orb} = 300 \text{days}\) we find 46 BH-Sol systems, all of these (except one!) evolve via the same CE channel. This suggests that there isn't a unique identity placed on BH-Sol systems with \(p_{orb} \leq 3 \text{days}\)\footnote{This orbital period distribution is possibly due to natal kick velocities, and is suggested by the literature, but I could not find a strong link in the limited data.}, and thus it makes more sense to investigate the population as a whole. Note that there is one system which does \textit{not} do RLO before CC1, and only reaches a solar-like mass after RLO2 (upon which it also fails), so I'm excluding it for now. Likely important to keep in mind though.
 
 
 \begin{figure}[H]
     \centering
     \resizebox{0.85\textwidth}{!}{\input{graphs/BH-Sol_Masses_at_Initial_Formation.pgf}}
-    \caption{Masses at initial BH-Sol state. i.e. BH formation/S1 collaspe}
+    \caption{Masses at initial BH-Sol state. i.e., BH formation/S1 collapse}
 \end{figure}
 
 
 \begin{figure}[H]
     \centering
     \resizebox{0.9\textwidth}{!}{\input{graphs/orbital_period_of_BH-Sol_systems_at_S1_SN.pgf}\label{g:OP-BH-Sol}} 
-    \caption{Orbital Period of BH-Sol Systems at init onsent. }
+    \caption{Orbital Period of BH-Sol Systems at init onset. }
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \resizebox{0.9\textwidth}{!}{\input{graphs/Orbtial_Period_in_Init_BH-Sol_Systems.pgf}\label{g:OP-BH-Sol}} 
-    \caption{Crop of orbital Period of BH-Sol Systems at init onsent.}
+    \caption{Crop of orbital Period of BH-Sol Systems at init onset.}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \resizebox{0.9\textwidth}{!}{\input{graphs/S1_mass_i_of_BH-Sol_Systems.pgf}}
-    \caption{S1 mass inital distribution}
+    \caption{S1 mass initial distribution.}
     \label{g:OP-BH-Sol}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \resizebox{0.9\textwidth}{!}{\input{graphs/S2_mass_i_of_BH-Sol_Systems.pgf}} 
-    \caption{S2 mass inital distribution}
+    \caption{S2 mass initial distribution.}
 \end{figure}
 
 \subsection{Strong Initial Masses Correlation}
@@ -509,20 +509,20 @@ When plotting the individual masses of BH-Sol progenitors from Pop 2 there appea
     \label{fig:InitMassesBHSOL}
 \end{figure}
 
-Initially, I figured this was a biasing from the mass ratio scheme in the simulation being passed through, so I ran another grid with a \verb|secondary_mass_scheme = 'flat_mass_ratio'|. While this would also introduce biasing, I was expecting it to be largely different enough from Moe, and thus could tell if it was simply an artifact or a real correlation. 
+Initially, I figured this was a biasing from the mass ratio scheme in the simulation being passed through, so I ran another grid with a \verb|secondary_mass_scheme = 'flat_mass_ratio'|. While this would also introduce biasing, I was expecting it to be largely different enough from Moe, and thus could tell if it was simply an artifact or a real correlation. As we can see from figure \ref{fig:Moe17InitMassesBHSOL} and \ref{fig:RandSampleInitMassesBHSOL}, this correlation seems to be independent of the initial mass ratio used, suggesting some type of underlying phenomena\footnote{This very likely could just be a survivability configuration of CE evolution}.  
 
 \begin{figure}[H]
     \centering
     \resizebox{0.85\textwidth}{!}{\input{graphs/MoeDistro_Vs_Rand.pgf}} 
-    \caption{Initial ZAMS masses of simulation two and three. \textit{Note that 3 failed systems have been excluded}}
-    \label{fig:InitMassesBHSOL}
+    \caption{Initial BH-Sol ZAMS masses of simulation two (using Moe17PsandQs) and three (flat mass ratio). \textit{Note that 3 failed systems have been excluded.}}
+    \label{fig:Moe17InitMassesBHSOL}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \resizebox{0.85\textwidth}{!}{\input{graphs/MoeDistro_Vs_Rand_Vs_All.pgf}} 
-    \caption{Initial ZAMS masses of simulation two and three. \textit{Note that 3 failed systems have been excluded}}
-    \label{fig:InitMassesBHSOL}
+    \caption{Initial BH-Sol ZAMS masses of simulation two and three, vs random selection of simulation 3. \textit{Note that 3 failed BH-Sol systems have been excluded}.}
+    \label{fig:RandSampleInitMassesBHSOL}
 \end{figure}
 % \subsection{Bugs/issues}
 % \hrule
@@ -552,7 +552,7 @@ Initially, I figured this was a biasing from the mass ratio scheme in the simula
 \vspace{.5cm}
 
 \begin{list}{-}{}
-\item Fid out if it makes sense for the onset of un-stable rlo to happen at \(P_{orb} \approx 4000 \text{days}\)
+\item Find out if it makes sense for the onset of unstable rlo to happen at \(P_{orb} \approx 4000 \text{days}\)
 \end{list}
 
 
@@ -561,7 +561,7 @@ Initially, I figured this was a biasing from the mass ratio scheme in the simula
 \hrule
 \vspace{.5cm}
 \begin{list}{-}{}
-\item Tried running a grid, seems to have just completly failed from trying to refence itself before it was fully initalized. Entire log was filled with 
+\item Tried running a grid, seems to have just completely failed from trying to refence itself before it was fully initialized. Entire log was filled with 
 \begin{minted}{bash}
     Traceback (most recent call last):
     File "/gpfs/projects/b1095/bku2126/UCXBInvestigation/POSYDON/posydon/popsyn/binarypopulation.py", line 339, in _safe_evolve
@@ -581,9 +581,9 @@ Initially, I figured this was a biasing from the mass ratio scheme in the simula
                 ~~~~~~~^^^^
   IndexError: index -1 is out of bounds for axis 0 with size 0
 \end{minted}
-and from what I can tell, this happened to nearly all the simmed bianaries
-\item Should we include an inital eccentiricity distribution? I imagine it would impact formation with unstable RLO and CE.
-\item Does it make sense to still be filtering for \(p_{orb} < 3 \text{days}\)? The simulations seem to be suggesting that \textit{all} BH-Sol systems evolve through CE, and that the main thing effecting \(p_{orb}\) post CE is the kick strength of the BH. So, maybe we should be initally filterting for all BH-Sol, and if we want the formation rate of specifically low \(p_{orb}\) ones, just take the subpop.
-\item Cool if i present an assortment of general POSYDON things ive worked on at astrofest?
+and from what I can tell, this happened to nearly all the simmed binaries
+\item Should we include an initial eccentricity distribution? I imagine it would impact formation with unstable RLO and CE.
+\item Does it make sense to still be filtering for \(p_{orb} < 3 \text{days}\)? The simulations seem to be suggesting that \textit{all} BH-Sol systems evolve through CE, and that the main thing effecting \(p_{orb}\) post CE is the kick strength of the BH. So, maybe we should be initially filtering for all BH-Sol, and if we want the formation rate of specifically low \(p_{orb}\) ones, just take the subpop.
+\item Cool if I present an assortment of general POSYDON things I've worked on at astrofest?
 \end{list}
 \end{document}
