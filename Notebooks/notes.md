@@ -37,3 +37,7 @@ To-do
 - is there a better way for filterting other then where="str bool cond". loading into pandas is obvs very inefficent, but a little easiser to work with 
 
 - ask if I can correct some typos on the POSYDON docs
+
+
+try some multi-metalticity sims 
+add export csv of row before BH collapse 
