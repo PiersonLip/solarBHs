@@ -67,7 +67,7 @@ breaklines=true
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Other Settings
-\enabledarkmode
+% \enabledarkmode
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% Page Setting %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \geometry{a4paper}
@@ -546,14 +546,14 @@ Initially, I figured this was a biasing from the mass ratio scheme in the simula
 
 % This isn't nessecairly a posydon issue, as it happens when the script is being already ran \textit{in} an interactive compute node, as the memory env then gets passed to the script. Fixed it with \verb|srun --mem=0| or just not running in an interactive node.
 
-\pagebreak
-\section{To-Do}
-\hrule
-\vspace{.5cm}
+% \pagebreak
+% \section{To-Do}
+% \hrule
+% \vspace{.5cm}
 
-\begin{list}{-}{}
-\item Find out if it makes sense for the onset of unstable rlo to happen at \(P_{orb} \approx 4000 \text{days}\)
-\end{list}
+% \begin{list}{-}{}
+% \item Find out if it makes sense for the onset of unstable rlo to happen at \(P_{orb} \approx 4000 \text{days}\)
+% \end{list}
 
 
 \pagebreak
@@ -561,7 +561,7 @@ Initially, I figured this was a biasing from the mass ratio scheme in the simula
 \hrule
 \vspace{.5cm}
 \begin{list}{-}{}
-\item Tried running a grid, seems to have just completely failed from trying to refence itself before it was fully initialized. Entire log was filled with 
+\item Tried running a grid on POSYDON V2.2, seems to have just completely failed from trying to refence itself before it was fully initialized. Entire log was filled with \dots After updating to V2.3 it worked fine.
 \begin{minted}{bash}
     Traceback (most recent call last):
     File "/gpfs/projects/b1095/bku2126/UCXBInvestigation/POSYDON/posydon/popsyn/binarypopulation.py", line 339, in _safe_evolve
@@ -585,5 +585,7 @@ and from what I can tell, this happened to nearly all the simmed binaries
 \item Should we include an initial eccentricity distribution? I imagine it would impact formation with unstable RLO and CE.
 \item Does it make sense to still be filtering for \(p_{orb} < 3 \text{days}\)? The simulations seem to be suggesting that \textit{all} BH-Sol systems evolve through CE, and that the main thing effecting \(p_{orb}\) post CE is the kick strength of the BH. So, maybe we should be initially filtering for all BH-Sol, and if we want the formation rate of specifically low \(p_{orb}\) ones, just take the subpop.
 \item Cool if I present an assortment of general POSYDON things I've worked on at astrofest?
+\item Any papers on the specifics of CE, and possibly survival rate?
+\item Also, any possibility of the project going into the summer?
 \end{list}
 \end{document}
