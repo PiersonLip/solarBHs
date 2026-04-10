@@ -42,15 +42,17 @@ def read_input(input_path: Path):
     return pop
 
 def process(pop, maxMass, maxPeriod) -> tuple:
-    """Filtering Logic — returns full population file with calculated formation channels, as well as a .csv with the BH_sol rows"""
+    """Filtering Logic. Returns full population file with calculated formation channels, as well as a .csv with the BH_sol rows"""
 
     ### BH-MS_Detached filt
     BH_MS_FiltCond_Hist = "((S2_state == 'H-rich_Core_H_burning') & (S1_state == 'BH')) & (state == 'detached')"
     print('filtering pop for S1, S2, BH_MS')
+
+    solBH_df_Hist = pd.DataFrame()
     try:
-        solBH_df_Hist = pop.history.select(where = BH_MS_FiltCond_Hist)
-    except:
-        print(f'WARNING!! found NO BH_MS-Detached systems')
+        solBH_df_Hist = pop.history.select(where=BH_MS_FiltCond_Hist)
+    except Exception as e:
+        print(f'WARNING!! found NO BH_MS-Detached systems: {e}')
 
     print(f'found {len(solBH_df_Hist)} BH_MS-Detached systems')
 
@@ -68,38 +70,46 @@ def process(pop, maxMass, maxPeriod) -> tuple:
     ############################################
     ## actually filter for the BH_Sol systems ##
     ############################################
-    df = solBH_df_Hist
 
-    filtPop_df = (
-        df[
+    binary_indices = solBH_df_Hist.index.unique().tolist()  
+    df = pop.history[binary_indices]
+
+    BH_Sol_Mask = (
             (df['S1_state'] == 'BH') & (df['S2_state'] == 'H-rich_Core_H_burning')
             &  (df['state'] == 'detached')
             &  (df['S2_mass'] < float(maxMass)) & (df['orbital_period'] < float(maxPeriod))
             &  (df['S2_mass'] > .4)
             &  (df['time'] < 10e9)
-        ])
+        )
+
+    PrevRowMask = BH_Sol_Mask.groupby(level=0).shift(-1, fill_value=False)
+    AftRowMask = BH_Sol_Mask.groupby(level=0).shift(1, fill_value=False)
     
-    df = None
+    filtPop_df = df[BH_Sol_Mask].copy()
+    PrevRow    = df[PrevRowMask].copy()
+    AftRow     = df[AftRowMask].copy()
 
     print(f'Found {len(filtPop_df)} BH-Sol Systems.')
-    return filtPop_df
+    return filtPop_df, PrevRow, AftRow
 
-def write_outputs(pop,filtPop_df, output_dir: Path, outputName, overwrite):
+def write_outputs(pop,filtPop_df, PrevRow, AftRow, output_dir: Path, outputName, overwriteBool):
     """Write both .csv and .h5."""
 
     output_dir.mkdir(parents=True, exist_ok=True)
 
     pop_h5_OutputPath = (output_dir / outputName).with_suffix('.h5')
-    df_csv_OutputPath = (output_dir / outputName).with_suffix('.csv')
+    df_csv_OutputPath = (output_dir / outputName)
     
-    if pop_h5_OutputPath.exists() and not overwrite:
+    if pop_h5_OutputPath.exists() and not overwriteBool:
         raise FileExistsError(f'{pop_h5_OutputPath} already exists!! set overwrite to true or change FP.')
-    if df_csv_OutputPath.exists() and not overwrite:
+    if df_csv_OutputPath.exists() and not overwriteBool:
         raise FileExistsError(f'{pop_h5_OutputPath} already exists!! set overwrite to true or change FP.')
 
     pop.export_selection(filtPop_df.index.to_list(), (str(pop_h5_OutputPath)), append=False, overwrite = True)
     
-    filtPop_df.to_csv(str(df_csv_OutputPath))
+    filtPop_df.to_csv(str(df_csv_OutputPath.with_suffix('.csv')))
+    PrevRow.to_csv(str(((output_dir / (outputName +'prevRow'))).with_suffix('.csv')))
+    AftRow.to_csv(str(((output_dir / (outputName +'AftRow'))).with_suffix('.csv')))
 
     return pop_h5_OutputPath, df_csv_OutputPath
 
@@ -114,8 +124,8 @@ def main():
         sys.exit(1)
 
     pop = read_input(input_path)
-    filtPop_df = process(pop, args.maxMass, args.maxPeriod)
-    popPath, csvPath = write_outputs(pop, filtPop_df, Path(args.output_dir), str(args.outputName), args.overwrite)
+    filtPop_df, PrevRow, AftRow = process(pop, args.maxMass, args.maxPeriod)
+    popPath, csvPath = write_outputs(pop, filtPop_df, PrevRow, AftRow, Path(args.output_dir), str(args.outputName), args.overwrite)
 
     print(f"Written: {popPath}")
     print(f"Written: {csvPath}")
