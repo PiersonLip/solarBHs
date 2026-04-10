@@ -89,6 +89,11 @@ def process(pop, maxMass, maxPeriod) -> tuple:
     PrevRow    = df[PrevRowMask].copy()
     AftRow     = df[AftRowMask].copy()
 
+    #### filt for failed systems
+    fc = pop_02Z.formation_channels
+    mask = fc['channel'] == 'ZAMS_oCE1_CC1_oRLO2_CC2_maxtime_END'
+    binary_indices_02Z = fc[mask].index.tolist()
+
     print(f'Found {len(filtPop_df)} BH-Sol Systems.')
     return filtPop_df, PrevRow, AftRow
 
