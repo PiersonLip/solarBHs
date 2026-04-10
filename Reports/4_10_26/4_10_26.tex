@@ -1,0 +1,296 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Define Article %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass{article}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Using Packages %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{empheq}
+\usepackage{mdframed}
+\usepackage{booktabs}
+\usepackage{lipsum}
+\usepackage{graphicx}
+\usepackage{color}
+% \usepackage{psfrag}
+\usepackage{pgfplots}
+\usepackage{bm}
+\usepackage{amsmath}
+\usepackage[most]{tcolorbox}
+\usepackage{xparse}
+\usepackage{darkmode}
+\usepackage[stable]{footmisc}
+\usepackage{gensymb}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage[colorlinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage{cancel}
+\usepackage{minted}
+\setminted{
+  fontsize=\small,
+  tabsize=2,
+  frame=lines,
+  framesep=2mm
+}
+\usepackage{footnote}
+\usepackage{listings}
+\lstset{
+basicstyle=\small\ttfamily,
+columns=flexible,
+breaklines=true
+}
+
+\newcommand{\mathdefault}[1]{#1}
+
+\usepackage[strings]{underscore}
+
+
+\makesavenoteenv{tabular}
+% --- Glossaries + TikZ externalization friendly setup ---
+\makeatletter
+\@ifundefined{pgfexternalrealjob}{%
+  % Main document run: full glossaries with automake
+  \usepackage[automake]{glossaries-extra}%
+}{%
+  % External TikZ runs: minimal glossaries that don't try to build/read files
+  \usepackage[nostyles]{glossaries-extra}%
+  % Pretend glossary files don't exist, so no "use \makeglossaries" error
+  \def\glsifexists#1#2#3{#3}%
+}
+\makeatother
+
+\usetikzlibrary{calc,decorations.pathreplacing, arrows.meta, positioning, external}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Other Settings
+\enabledarkmode
+
+%%%%%%%%%%%%%%%%%%%%%%%%%% Page Setting %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\geometry{a4paper}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%% Define some useful colors %%%%%%%%%%%%%%%%%%%%%%%%%%
+\definecolor{ocre}{RGB}{243,102,25}
+\definecolor{mygray}{RGB}{243,243,244}
+\definecolor{deepGreen}{RGB}{26,111,0}
+\definecolor{shallowGreen}{RGB}{235,255,255}
+\definecolor{deepBlue}{RGB}{61,124,222}
+\definecolor{shallowBlue}{RGB}{235,249,255}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%% Define an orangebox command %%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand\orangebox[1]{\fcolorbox{ocre}{mygray}{\hspace{1em}#1\hspace{1em}}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% English Environments %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Theorem Macro %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newtheoremstyle{mytheoremstyle}{3pt}{3pt}{\normalfont}{0cm}{\rmfamily\bfseries}{}{1em}{{\color{black}\thmname{#1}~\thmnumber{#2}}\thmnote{\,--\,#3}}
+\newtheoremstyle{myproblemstyle}{3pt}{3pt}{\normalfont}{0cm}{\rmfamily\bfseries}{}{1em}{{\color{black}\thmname{#1}~\thmnumber{#2}}\thmnote{\,--\,#3}}
+\theoremstyle{mytheoremstyle}
+\newmdtheoremenv[linewidth=1pt,backgroundcolor=shallowGreen,linecolor=deepGreen,leftmargin=0pt,innerleftmargin=20pt,innerrightmargin=20pt,]{theorem}{Theorem}[section]
+\theoremstyle{mytheoremstyle}
+\newmdtheoremenv[linewidth=1pt,backgroundcolor=shallowBlue,linecolor=deepBlue,leftmargin=0pt,innerleftmargin=20pt,innerrightmargin=20pt,]{definition}{Definition}[section]
+\theoremstyle{myproblemstyle}
+\newmdtheoremenv[linecolor=black,leftmargin=0pt,innerleftmargin=10pt,innerrightmargin=10pt,]{problem}{Problem}[section]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\theoremstyle{myproblemstyle}
+\newmdtheoremenv[
+  linecolor=black,
+  leftmargin=0pt,
+  innerleftmargin=10pt,
+  innerrightmargin=10pt,
+]{example}{Example}[section]
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%% Equation Macro %%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Simple mdframed style for equation boxes (no TikZ)
+\newmdenv[
+        linewidth=1pt,
+        backgroundcolor=black!85,
+        fontcolor = white!90,
+        linecolor=white!100,
+        leftmargin=0pt,
+        innerleftmargin=20pt,
+        innerrightmargin=20pt,]
+        {eqbox}
+
+\ExplSyntaxOn
+\seq_new:N \g_piers_eq_seq
+
+% Store (label, title, equation-body) for later printing
+\cs_new_protected:Npn \piers_add_eq:nnn #1#2#3
+  {
+    \seq_gput_right:Nn \g_piers_eq_seq
+      { \piers_eq_entry:nnn {#1}{#2}{#3} }
+  }
+
+% How each equation is printed in the final summary
+\cs_new_protected:Npn \piers_eq_entry:nnn #1#2#3
+  {
+    \par\noindent
+    \begin{minipage}{0.72\linewidth}
+      \begin{equation*}
+        #3
+      \end{equation*}
+    \end{minipage}
+    \begin{minipage}{0.9\linewidth}
+      \raggedright
+      \qquad\eqref{#1}\;(\textit{#2})
+    \end{minipage}
+
+    \par\bigskip
+  }
+
+% Environment: \begin{eqboxed}{label}{Title}{Description} <equation> \end{eqboxed}
+\NewDocumentEnvironment{eqboxed}{ m m m +b }
+  {
+    % begin code: mdframed-based, no TikZ
+    \begin{eqbox}
+      {\bfseries #2}\par\vspace{0.4em}%
+      \begin{equation}
+        \label{#1}
+        #4
+      \end{equation}
+      #3
+    \end{eqbox}
+    % store equation body for later
+    \piers_add_eq:nnn{#1}{#2}{#4}
+  }
+  {
+    % end code
+  }
+
+% Command to print all stored equations at the end
+\NewDocumentCommand{\PrintAllEquations}{}
+  {
+    \section{Equations}
+    \seq_use:Nn \g_piers_eq_seq { }
+  }
+\ExplSyntaxOff
+
+% ----------------------------
+% Constants boxed environment
+% ----------------------------
+\newmdenv[
+  framemethod=default,
+  linewidth=1pt,
+  backgroundcolor=black!85,
+  fontcolor = white!90,
+  linecolor=white!100,
+  leftmargin=0pt,
+  innerleftmargin=20pt,
+  innerrightmargin=20pt,
+]{constbox}
+
+\ExplSyntaxOn
+\seq_new:N \g_piers_const_seq
+
+% Store (label, title, constant-body) for later printing
+\cs_new_protected:Npn \piers_add_const:nnn #1#2#3
+  {
+    \seq_gput_right:Nn \g_piers_const_seq
+      { \piers_const_entry:nnn {#1}{#2}{#3} }
+  }
+
+% How each constant is printed in the final summary
+\cs_new_protected:Npn \piers_const_entry:nnn #1#2#3
+  {
+    \par\noindent
+    \begin{minipage}{0.72\linewidth}
+      % mirror your equation* block, but as display math
+      \[
+        #3
+      \]
+    \end{minipage}
+    \begin{minipage}{0.9\linewidth}
+      \raggedright
+      \qquad(\texttt{\ref{#1}})\;(\textit{#2})
+    \end{minipage}
+
+    \par\bigskip
+  }
+
+\newcounter{const}
+\renewcommand{\theconst}{\arabic{const}}
+
+% Environment: \begin{constboxed}{label}{Title}{Description} <constant> \end{constboxed}
+\NewDocumentEnvironment{constboxed}{ m m m +b }
+  {
+    \refstepcounter{const}
+    \begin{constbox}
+      {\bfseries #2}\par\vspace{0.4em}%
+      \label{#1}
+      \[ 
+        #4
+      \]
+      #3
+    \end{constbox}
+    % store constant body for later
+    \piers_add_const:nnn{#1}{#2}{#4}
+  }
+  {}
+
+% Command to print all stored constants at the end
+\NewDocumentCommand{\PrintAllConstants}{}
+  {
+    \section{Constants}
+    \seq_use:Nn \g_piers_const_seq { }
+  }
+\ExplSyntaxOff
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Plotting Settings %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepgfplotslibrary{colorbrewer}
+\pgfplotsset{width=8cm,compat=1.9}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Title & Author %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\title{R2}
+\author{Pierson Lipschultz}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%% Glossary entries %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Only do the real glossaries work in the main document run
+\tikzifexternalizing{}{%
+  \makeglossaries
+}
+\sloppy
+\tikzexternalize[prefix=tikz-cache/]
+%%%%%%%5%%%%%%%%%%%%%%%%%%%55
+\begin{document}
+    \pagestyle{fancy}
+
+    \fancyhf{}
+    \fancyfoot[L]{\nouppercase{\leftmark}} % "1 INTRODUCTION"
+    \fancyfoot[R]{\thepage}% page number on right
+
+    % Remove header rule and add footer rule instead
+    \renewcommand{\headrulewidth}{0pt}
+    \renewcommand{\footrulewidth}{0.4pt}
+    \renewcommand{\sectionmark}[1]{\markboth{#1}{}}
+
+    \maketitle
+
+
+    \pagebreak
+    \section{Questions}
+    \hrule
+    \vspace{.5cm}
+    
+    \begin{list}{-}{}
+    \item Is it possible to get access to some other Quest partitions? Namely, ``short'', but possibly also Trident or something. Currently using a lot of small (~5 minute) sbatch jobs when filtering pops, and the \verb|ciera-std| partition is typically full, or has a longish queue for jobs. 
+    \item Two grids have very inden
+    \end{list}
+\end{document}
