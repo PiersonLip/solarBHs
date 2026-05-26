@@ -34,7 +34,7 @@ def validate_args(args):
         raise FileNotFoundError(f"Input file not found: {input_path}")
     
     if args.outputName == None:
-        args.outputName = str('BH_Sol_Filtered_' + input_path.stem)
+        args.outputName = str('LMXB_Filtered_' + input_path.stem)
 
 
 def read_input(input_path: Path):
@@ -90,11 +90,11 @@ def process(pop, maxMass, maxPeriod) -> tuple:
     AftRow     = df[AftRowMask].copy()
 
     #### filt for failed systems
-    fc = pop_02Z.formation_channels
-    mask = fc['channel'] == 'ZAMS_oCE1_CC1_oRLO2_CC2_maxtime_END'
-    binary_indices_02Z = fc[mask].index.tolist()
+    ###fc = pop.formation_channels
+    ##mask = fc['channel'] == 'ZAMS_oCE1_CC1_oRLO2_CC2_maxtime_END'
+    ###:binary_indices_02Z = fc[mask].index.tolist()
 
-    print(f'Found {len(filtPop_df)} BH-Sol Systems.')
+   ###print(f'Found {len(filtPop_df)} BH-Sol Systems.')
     return filtPop_df, PrevRow, AftRow
 
 def write_outputs(pop,filtPop_df, PrevRow, AftRow, output_dir: Path, outputName, overwriteBool):
