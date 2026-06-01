@@ -283,28 +283,65 @@ breaklines=true
 
     \maketitle
 
-    \pagebreak
     \section{New Code/Dev stuff}
     \hrule
     \vspace{.5cm}
-    
-    Setup \verb|BH-Sol_Filter.py| to use multiprocessing, cutting time down for filtering into the BH-Sol canidates massively.
 
-
-
-    \pagebreak
-    \section{Questions}
-    \hrule
-    \vspace{.5cm}
-    
     \begin{list}{-}{}
-    \item Is it possible to get access to some other Quest partitions? Namely, ``short'', but possibly also Trident or something. Currently using a lot of small (~5 minute) sbatch jobs when filtering pops, and the \verb|ciera-std| partition is typically full, or has a longish queue for jobs. 
-    \item How should i sort for failed CE systems? My plan was to find the init CE mass distribution from the BH-Sol pop, constrain the main pop to that, and then constrain that to ones where their next step is merging
-    \item Next steps probably involve higher res grids + 10 mill sim? 
+    \item (maybe) Setup \verb|BH-Sol_Filter.py| to use multiprocessing, cutting time down for filtering into the BH-Sol candidates massively.
+    \item 
     \end{list}
 
     \pagebreak
-    \section{\(1-.01Z_\odot\) Graphs}
+    \section{Questions/Theories/Ponderings}
+    \hrule
+    \vspace{.5cm}
+    
+    \subsection{PN Detection when looking for BH-Sol systems}
+    \hrule
+    \vspace{.5cm}
+
+    In ``An upper limit on the frequency of short-period black hole companions to Sun-like stars'' they looked solar for tidal deformations from another orbiting BH on the sunlike star. However, wouldn't it also make sense to factor in the fact that said systems \textit{must} have evolved through CE evolution and ejected a shell? Thus producing some sort of PN ring? I'll have to look into it more, as I'd imagine said ring would also be ionized for a brief(?) period of time before then largely acting to obscure (and maybe redden) the sun-like star 
+    
+    \subsection{POSYDON Dataset to Classify Tertiary System}
+    \hrule
+    \vspace{.5cm}
+
+    Couldn't one theoretically use a large POSYDON population and its properties to then compare to the properties of observed systems to determine if they evolved through binary evolution? Accidentally stumbled across this around a year ago with V404 Cygni, but it feels relatively feasible to make a grouping algorithm to find systems which are predicted to have evolved through tertiary means (or capture/dynamic methods) 
+
+    \subsection{Striation in Mass Loss Graphs}
+    \hrule
+    \vspace{.5cm}
+    In the graphs with \(\Delta M_{SNe}\) we see some striation happening with masses loses between 3.5 to 3.7 and then again between 3.9 to 4.1, is this just a byproduct of POSYDON resolution or is there some underlying physics concept?
+    
+    \subsection{Distinct Resolution Scale}
+    \hrule
+    \vspace{.5cm}
+    In the BH-Sol Masses at BH Formation graph \ref{g:BHSol_Masses} we can see the effects of the resolution of the POSYDON reference grids (could also possibly be some sort of underlying physics), also, notably, there doesn't seem to be a massive difference between the lower resolution one (\(.0Z_\odot\)) and the higher res. 
+
+
+    \pagebreak
+    \section{10 Mill Pop Graphs}
+    \hrule
+    \vspace{.5cm}
+
+      
+    \resizebox{0.9\textwidth}{!}{\input{10MillPop/graphs/ZsunVs_e02Zsun_BHSol_Masses.pgf}}
+    
+
+    \resizebox{0.9\textwidth}{!}{\input{10MillPop/graphs/ZsunVs_e02Zsun_BHSol_Masses.pgf}\label{g:BHSol_Masses}}
+
+    \resizebox{0.9\textwidth}{!}{\input{10MillPop/graphs/ZsunVs_e02Zsun.pgf}\label{g:OP-BH-Sol}} 
+
+    \resizebox{0.9\textwidth}{!}{\input{10MillPop/graphs/SN_Mass_Loss_Vs_Eccentricity_of_BH-Sol_progenitors.pgf}\label{g:OP-BH-Sol}} 
+
+    \resizebox{0.9\textwidth}{!}{\input{10MillPop/graphs/MLvEcc_MultiMetal.pgf}\label{g:OP-BH-Sol}} 
+
+    \resizebox{0.9\textwidth}{!}{\input{10MillPop/graphs/Eccentricity_Vs_Natal_Kick_Velocity_of_BH-Sol_progenitors.pgf}\label{g:OP-BH-Sol}} 
+    
+
+    \pagebreak
+    \section{1 Mill Graphs}
     \hrule
     \vspace{.5cm}
     
@@ -316,16 +353,7 @@ breaklines=true
 
     \resizebox{0.9\textwidth}{!}{\input{graphs/MLvEcc_MultiMetal.pgf}\label{g:OP-BH-Sol}} 
 
-
     \resizebox{0.9\textwidth}{!}{\input{graphs/Eccentricity_Vs_Natal_Kick_Velocity_of_BH-Sol_progenitors.pgf}\label{g:OP-BH-Sol}} 
-
-
-    \pagebreak
-    \section{10 Mill Pop Graphs}
-    \hrule
-    \vspace{.5cm}
-    
-
 
 
 
