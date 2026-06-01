@@ -4,7 +4,7 @@
 *.batch.*
 run_metallicity.py
 merge_metallicity.py
-
+merging.csv
 latex crap 
 *.gz
 *.aux
@@ -21,3 +21,4 @@ latex crap
 *.fls
 *.fdb_latexmk
 *.minted
+
