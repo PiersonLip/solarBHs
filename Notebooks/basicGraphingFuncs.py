@@ -15,14 +15,15 @@ def basicColHist(df,
                  savePath: Path = Path(),
                  df_name: str = 'default',
                  dfComp:bool =False,
+                 binN:int = 50,
                  ) -> None:
     
     if dfComp == True:
     
         fig, (ax1, ax2) = plt.subplots(1,2, figsize=(8,5))
         
-        sns.histplot(df[var], bins=50, ax=ax1)
-        sns.histplot(df2[var], bins=50, ax=ax2)
+        sns.histplot(df[var], bins=binN, ax=ax1)
+        sns.histplot(df2[var], bins=binN, ax=ax2)
 
         
         if title is None:
@@ -43,7 +44,7 @@ def basicColHist(df,
     else:
         fig, ax = plt.subplots(figsize=(8,5))
         
-        sns.histplot(df[var], bins=50, ax=ax)
+        sns.histplot(df[var], bins=binN, ax=ax)
         
         if title is None:
             title = f'{var} of BH-Sol systems at S1 SN'
@@ -64,11 +65,13 @@ def genVarHist(var: list,
                title: str | None = None, 
                xLabel: str | None = None, 
                saveFig: bool = False, 
-               savePath: Path = Path()) -> None:
+               savePath: Path = Path(),
+               binN:int = 50,
+               ) -> None:
     
     fig, ax = plt.subplots(figsize=(8,5))
     
-    sns.histplot(var, bins=50, ax=ax)
+    sns.histplot(var, bins=binN, ax=ax)
     
     if title is None:
         title = 'default'
