@@ -283,16 +283,16 @@ breaklines=true
 
     \maketitle
 
-    \section{New Code/Dev stuff}
-    \hrule
-    \vspace{.5cm}
+    % \section{New Code/Dev stuff}
+    % \hrule
+    % \vspace{.5cm}
 
-    \begin{list}{-}{}
-    \item (maybe) Setup \verb|BH-Sol_Filter.py| to use multiprocessing, cutting time down for filtering into the BH-Sol candidates massively.
-    \item 
-    \end{list}
+    % \begin{list}{-}{}
+    % \item (maybe) Setup \verb|BH-Sol_Filter.py| to use multiprocessing, cutting time down for filtering into the BH-Sol candidates massively.
+    % \item 
+    % \end{list}
 
-    \pagebreak
+    % \pagebreak
     \section{Questions/Theories/Ponderings}
     \hrule
     \vspace{.5cm}
@@ -301,7 +301,9 @@ breaklines=true
     \hrule
     \vspace{.5cm}
 
-    In ``An upper limit on the frequency of short-period black hole companions to Sun-like stars'' they looked solar for tidal deformations from another orbiting BH on the sunlike star. However, wouldn't it also make sense to factor in the fact that said systems \textit{must} have evolved through CE evolution and ejected a shell? Thus producing some sort of PN ring? I'll have to look into it more, as I'd imagine said ring would also be ionized for a brief(?) period of time before then largely acting to obscure (and maybe redden) the sun-like star 
+    \textbf{This was a fun idea, but PNe are most likely wayyy too short-lived (assuming a timescale of 10-25kyr)} If I got nothing else to do I'll do the math for it. Speaking of, this is sorta an important problem, what's the method/formula for this? I.e finding the probability that a transient event is visible?
+
+    In previous papers they looked solar for tidal deformations from another orbiting BH on the sunlike star. However, wouldn't it also make sense to factor in the fact that said systems \textit{must} have evolved through CE evolution and ejected a shell? Thus producing some sort of PN ring? I'll have to look into it more, as I'd imagine said ring would also be ionized for a brief(?) period of time before then largely acting to obscure (and maybe redden) the sun-like star 
     
     \subsection{POSYDON Dataset to Classify Tertiary System}
     \hrule
@@ -314,10 +316,17 @@ breaklines=true
     \vspace{.5cm}
     In the graphs with \(\Delta M_{SNe}\) we see some striation happening with masses loses between 3.5 to 3.7 and then again between 3.9 to 4.1, is this just a byproduct of POSYDON resolution or is there some underlying physics concept?
     
-    \subsection{Distinct Resolution Scale}
+    \subsection{Resolution (?) Woes}
     \hrule
     \vspace{.5cm}
     In the BH-Sol Masses at BH Formation graph \ref{g:BHSol_Masses} we can see the effects of the resolution of the POSYDON reference grids (could also possibly be some sort of underlying physics), also, notably, there doesn't seem to be a massive difference between the lower resolution one (\(.0Z_\odot\)) and the higher res. 
+
+    \subsection{POST CE Eccentricity}
+    \hrule
+    \vspace{.5cm}
+    Sorta can? By process of elimination it's because of the SNe, but, the natal kick velocity doesn't seem to have a strong correlation, yet the systems y\_vel does?
+
+    Cannot for the life of me figure out what is causing the distribution of eccentricities for the BH-Sol systems. It seems to vaguely be a normal distribution, but (so far) I haven't found any properties that seem to be correlated. The CE stage sets eccentricity to 0 at envelope ejection, which really only leaves the SNe stage, but the mass loss and the natal kick velocity don't seem to be correlated. 
 
 
     \pagebreak
@@ -325,8 +334,12 @@ breaklines=true
     \hrule
     \vspace{.5cm}
 
+    \begin{figure}[h!]
+    \resizebox{0.9\textwidth}{!}{\input{10MillPop/graphs/BHSolProgenitorVsVFailedMergers.pgf}}
+    
+    \caption{Note that these were simply constrained based on the max and min of the initial masses. Next step is actually sampling from a proper matching distribution}
       
-    % \resizebox{0.9\textwidth}{!}{\input{10MillPop/graphs/BHSolProgenitorVsVFailedMergers.pgf}}
+    \end{figure}
     
 
     \resizebox{0.9\textwidth}{!}{\input{10MillPop/graphs/ZsunVs_e02Zsun_BHSol_Masses.pgf}\label{g:BHSol_Masses}}
