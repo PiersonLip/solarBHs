@@ -10,4 +10,4 @@
 #SBATCH --cpus-per-task=16
 export PATH_TO_POSYDON=/home/bku2126/b1095/bku2126/UCXBInvestigation/POSYDON
 export PATH_TO_POSYDON_DATA=/projects/b1095/bku2126/POSYDON_tutorial/data
-python PAtp_BH_Filt.py /home/bku2126/b1095/bku2126/1e+00_Zsun_population.h5 -o /home/bku2126/b1095/bku2126/stellarBHs/Data/10MillFilt -overwrite True --maxPeriod 300
+python BH-Sol_Filter.py /home/bku2126/b1095/bku2126/1e+00_Zsun_population.h5 -o /home/bku2126/b1095/bku2126/stellarBHs/Data/BH_BH_SYstems -overwrite False --maxPeriod 300 --filtType BH_BH

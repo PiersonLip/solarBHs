@@ -21,6 +21,8 @@ def parse_args():
     parser.add_argument("-overwrite", default=False, help="Overwrite existing files with output.")
     parser.add_argument("--maxMass", default=3, help="(Solar) Upper mass limit for filtering")
     parser.add_argument("--maxPeriod", default=3.5, help="(Days) Upper period limit for filtering")
+    parser.add_argument("--filtType", default='BH_Sol', help="Type of system to filter for, current options are BH_Sol and BH_BH")
+
     
     return parser.parse_args()
 
@@ -41,58 +43,76 @@ def read_input(input_path: Path):
     pop = Population(str(input_path))
     return pop
 
-def process(pop, maxMass, maxPeriod) -> tuple:
+def process(pop, maxMass, maxPeriod, filtType) -> tuple:
     """Filtering Logic. Returns full population file with calculated formation channels, as well as a .csv with the BH_sol rows"""
 
-    ### BH-MS_Detached filt
-    BH_MS_FiltCond_Hist = "((S2_state == 'H-rich_Core_H_burning') & (S1_state == 'BH')) & (state == 'detached')"
-    print('filtering pop for S1, S2, BH_MS')
+    if filtType == 'BH_Sol':
+        ### BH-MS_Detached filt
+        filtCond_Hist = "((S2_state == 'H-rich_Core_H_burning') & (S1_state == 'BH')) & (state == 'detached')"
+        print('filtering pop for S1, S2, BH_MS')
+    elif filtType =='BH_BH':
+        filtCond_Hist = "((S2_state == 'BH & (S1_state == 'BH')) & (state == 'detached')"
+        print(f'filtering pop for {filtType}')
 
-    solBH_df_Hist = pd.DataFrame()
+    df_Hist = pd.DataFrame()
     try:
-        solBH_df_Hist = pop.history.select(where=BH_MS_FiltCond_Hist)
+        df_Hist = pop.history.select(where=filtCond_Hist)
     except Exception as e:
-        print(f'WARNING!! found NO BH_MS-Detached systems: {e}')
+        print(f'WARNING!! found NO {filtType} systems: {e}')
 
-    print(f'found {len(solBH_df_Hist)} BH_MS-Detached systems')
+    print(f'found {len(df_Hist)} {filtType} systems')
 
     #### checking for S2 BHs and S1 MS 
-    BH_MS_InverseFiltCond_Hist = "((S1_state == 'H-rich_Core_H_burning') & (S2_state == 'BH')) & (state == 'detached')"
-
-    print('filtering pop for S2, S1, BH-Sol')
-    try:
-        solBH_Inverse_df_Hist = pop.history.select(where = BH_MS_InverseFiltCond_Hist)
-        if len(solBH_Inverse_df_Hist) != 0: print (f'Warning!! Found {len(solBH_Inverse_df_Hist)} systems which S1:MS, S2:BH!! ')
-    except:
-        print('No S2, S1 BHs :)')
+    if filtType == 'BH_Sol':
+        BH_MS_InverseFiltCond_Hist = "((S1_state == 'H-rich_Core_H_burning') & (S2_state == 'BH')) & (state == 'detached')"
+        print('filtering pop for S2, S1, BH-Sol')
+    
+        try:
+            solBH_Inverse_df_Hist = pop.history.select(where = BH_MS_InverseFiltCond_Hist)
+            if len(solBH_Inverse_df_Hist) != 0: print (f'Warning!! Found {len(solBH_Inverse_df_Hist)} systems which S1:MS, S2:BH!! ')
+        except:
+            print('No S2, S1 BHs :)')
 
 
     ############################################
     ## actually filter for the BH_Sol systems ##
     ############################################
 
-    binary_indices = solBH_df_Hist.index.unique().tolist()  
+    binary_indices = df_Hist.index.unique().tolist()  
     df = pop.history[binary_indices]
 
-    BH_Sol_Mask = (
-            (df['S1_state'] == 'BH') & (df['S2_state'] == 'H-rich_Core_H_burning')
+    if filtType == 'BH_Sol':
+        BH_Sol_Mask = (
+                (df['S1_state'] == 'BH') & (df['S2_state'] == 'H-rich_Core_H_burning')
+                &  (df['state'] == 'detached')
+                &  (df['S2_mass'] < float(maxMass)) & (df['orbital_period'] < float(maxPeriod))
+                &  (df['S2_mass'] > .4)
+                &  (df['time'] < 10e9)
+            )
+        mask = BH_Sol_Mask
+        
+    elif filtType == "BH_BH":
+        BH_BH_Mask = (
+            (df['S1_state'] == 'BH' & df['S2_state'] == 'BH')
             &  (df['state'] == 'detached')
-            &  (df['S2_mass'] < float(maxMass)) & (df['orbital_period'] < float(maxPeriod))
-            &  (df['S2_mass'] > .4)
             &  (df['time'] < 10e9)
         )
+        mask = BH_BH_Mask
+    else:
+        print('not a valid option!! options are BH_Sol or BH_BH, exiting')
+        exit()
 
-    PrevRowMask = BH_Sol_Mask.groupby(level=0).shift(-1, fill_value=False)
-    AftRowMask = BH_Sol_Mask.groupby(level=0).shift(1, fill_value=False)
+    PrevRowMask = mask.groupby(level=0).shift(-1, fill_value=False)
+    AftRowMask = mask.groupby(level=0).shift(1, fill_value=False)
     
-    filtPop_df = df[BH_Sol_Mask].copy()
+    filtPop_df = df[mask].copy()
     PrevRow    = df[PrevRowMask].copy()
     AftRow     = df[AftRowMask].copy()
 
-    #### filt for failed systems
-    fc = pop_02Z.formation_channels
-    mask = fc['channel'] == 'ZAMS_oCE1_CC1_oRLO2_CC2_maxtime_END'
-    binary_indices_02Z = fc[mask].index.tolist()
+    # #### filt for failed systems
+    # fc = pop_02Z.formation_channels
+    # mask = fc['channel'] == 'ZAMS_oCE1_CC1_oRLO2_CC2_maxtime_END'
+    # binary_indices_02Z = fc[mask].index.tolist()
 
     print(f'Found {len(filtPop_df)} BH-Sol Systems.')
     return filtPop_df, PrevRow, AftRow
